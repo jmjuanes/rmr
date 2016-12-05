@@ -35,11 +35,11 @@ rmr.sync('./your/path/folder/');
 
 ## API
 
-## rmr(path, callback)
+### rmr(path, callback)
 
 Remove a file or directory recursively.
 
-## rmr.sync(path)
+### rmr.sync(path)
 
 Synchronously remove a file or directory recursively.
 
