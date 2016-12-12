@@ -75,33 +75,36 @@ var rmSync = function(p, opt)
   //Check the parent option
   if(typeof opt.parent !== 'boolean'){ opt.parent = true; }
 
-	//Get the path stat
+  //Get the path stat
   var stat = pstat.StatSync(p);
 
   //Check for error
   if(stat === false){ return; }
 
   //Check if is a file
-	if(stat.isFile() === true){ return fs.unlinkSync(p); }
+  if(stat.isFile() === true){ return fs.unlinkSync(p); }
 
   //Check if is not a directory
   if(stat.isDirectory() === false){ return; }
 
-	//Get the folder content
-	var list = fs.readdirSync(p);
+  //Get the folder content
+  var list = fs.readdirSync(p);
 
-	//Read the list
-	for(var i = 0; i < list.length; i++)
-	{
-		//Get the full file path
-		var file = path.resolve(p, list[i]);
+  //Read the list
+  for(var i = 0; i < list.length; i++)
+  {
+    //Get the full file path
+    var file = path.resolve(p, list[i]);
 
-		//Remove recursive
+    //Remove recursive
     rmSync(file, { parent: true });
-	}
+  }
 
-	//Remove the parent folder
-	fs.rmdirSync(p);
+  //Check the parent folder
+  if(opt.parent === false){ return; }
+
+  //Remove the parent folder
+  fs.rmdirSync(p);
 
   //Exit
   return;
