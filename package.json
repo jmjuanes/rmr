@@ -1,6 +1,6 @@
 {
   "name": "rmr",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Remove all files or directories from a path recursively",
   "keywords": [ "file", "directory", "files", "folders", "remove", "delete", "recursive", "recursively", "path" ],
   "author": "Josemi Juanes <josemijuanes@gmail.com>",
