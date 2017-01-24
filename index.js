@@ -49,9 +49,6 @@ var rmAsync = function(p, opt, cb)
       //Check for error
       if(error){ return cb(error); }
 
-      //Check the number
-      if(list.length === 0){ return fs.rmdir(p, function(){ return cb(true); }); }
-
       //Delete all files
       var remove_child = function(elements, index, callback)
       {
