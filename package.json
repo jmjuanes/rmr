@@ -11,5 +11,9 @@
     "url": "https://github.com/jmjuanes/rmr"
   },
   "dependencies": {},
+  "devDependencies":
+  {
+    "mocha": "^4.0.1"
+  },
   "license": "MIT"
 }
