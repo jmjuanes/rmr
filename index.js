@@ -1,48 +1,32 @@
 //Import dependencies
 var fs = require("fs");
 var path = require("path");
-var pstat = require('pstat');
-var keue = require('keue');
 
 //Remove async
 var rmAsync = function(p, opt, cb)
 {
-  //Check the option
-  if(typeof opt === 'function'){ var cb = opt; opt = {}; }
+  //Parse the callback
+  cb = (typeof opt === 'function') ? opt : cb;
+
+  //Parse the options object
+  opt = (typeof opt === 'object') ? opt : {};
 
   //Check the parent option
   if(typeof opt.parent !== 'boolean'){ opt.parent = true; }
 
-  //Initialize the new keue
-  var k = new keue();
-
-  //Check the path stat
-  k.then(function(next)
+  //Get the stat of the path
+  fs.stat(p, function(error, stat)
   {
-    //Get the stat of the path
-    pstat.Stat(p, function(stat)
+    //Check the error
+    if(error){ return next(error); }
+
+    //Check if is a file
+    if(stat.isFile() === true)
     {
-      //Check for error
-      if(stat === false){ return cb(null); }
+      //Delete the file and call the callback method
+      return fs.unlink(p, cb);
+    }
 
-      //Check if is a file
-      if(stat.isFile() === true)
-      {
-        //Delete the file and exit
-        return fs.unlink(p, function(){ return cb(null); });
-      }
-
-      //Continue
-      return next();
-    });
-
-    //Exit keue callback
-    return;
-  });
-
-  //Read all the files on the directory
-  k.then(function(next)
-  {
     //Open the directory
     fs.readdir(p, function(error, list)
     {
@@ -50,60 +34,39 @@ var rmAsync = function(p, opt, cb)
       if(error){ return cb(error); }
 
       //Delete all files
-      var remove_child = function(elements, index, callback)
+      var remove_child = function(index)
       {
         //Check the index
-        if(index >= elements.length){ return callback(null); }
-
-        //Get the element to remove
-        var el = elements[index];
-
-        //Get the file path
-        var file = path.resolve(p, el);
+        if(index >= list.length)
+        {
+          //Check for remove the parent folder
+          if(opt.parent === false)
+          {
+            //Call the callback without removing the parent folder
+            return cb(null);
+          }
+          else
+          {
+            //Delete the parent folder
+            return fs.rmdir(p, cb);
+          }
+        }
 
         //Remove the file or directory
-        rmAsync(file, { parent: true }, function(error)
+        rmAsync(path.resolve(p, list[index]), { parent: true }, function(error)
         {
           //Check for error
-          if(error){ return callback(error); }
+          if(error){ return cb(error); }
 
           //Next item on the list
-          return remove_child(elements, index + 1, callback);
+          return remove_child(index + 1);
         });
-
-        //Exit
-        return;
       };
 
       //Call the remove child recursive
-      remove_child(list, 0, function(error)
-      {
-        //Check for error
-        if(error){ return cb(error); }
-
-        //Check for remove the parent folder
-        if(opt.parent === false){ return cb(null); }
-
-        //Delete the folder
-        fs.rmdir(p, function(e){ return cb(e); });
-
-        //Exit
-        return;
-      });
-
-      //Exit readdir callback
-      return;
+      return remove_child(0);
     });
-
-    //Exit keue callback
-    return;
   });
-
-  //All done, exit
-  k.then(function(){ return cb(null); });
-
-  //Run the keue
-  k.run();
 };
 
 //Remove a file/directory sync
