@@ -44,10 +44,6 @@ Remove a file or directory recursively.
 Synchronously remove a file or directory recursively.
 
 
-## Related
-
-- [pstat](https://github.com/jmjuanes/pstat): check if file or directory exists.
-
 ## License
 
 [MIT](./LICENSE) &copy; Josemi Juanes.
