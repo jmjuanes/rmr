@@ -5,7 +5,15 @@
   "keywords": [ "file", "directory", "files", "folders", "remove", "delete", "recursive", "recursively", "path" ],
   "author": "Josemi Juanes <josemijuanes@gmail.com>",
   "main": "./index.js",
-  "repository": { "type": "git", "url": "https://github.com/jmjuanes/rmr" },
-  "dependencies": { "pstat": "1.0.2", "keue": "0.0.3" },
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/jmjuanes/rmr"
+  },
+  "dependencies":
+  {
+    "pstat": "1.0.2",
+    "keue": "0.0.3"
+  },
   "license": "MIT"
 }
