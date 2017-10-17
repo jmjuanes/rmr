@@ -18,7 +18,7 @@ var rmAsync = function(p, opt, cb)
   fs.stat(p, function(error, stat)
   {
     //Check the error
-    if(error){ return next(error); }
+    if(error){ return cb(error); }
 
     //Check if is a file
     if(stat.isFile() === true)
