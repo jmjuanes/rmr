@@ -73,22 +73,29 @@ var rmAsync = function(p, opt, cb)
 var rmSync = function(p, opt)
 {
   //Check the options
-  if(typeof opt !== 'object'){ var opt = {}; }
+  if(typeof opt !== 'object'){ opt = {}; }
 
   //Check the parent option
   if(typeof opt.parent !== 'boolean'){ opt.parent = true; }
 
-  //Get the path stat
-  var stat = pstat.StatSync(p);
+  //Run all code in a try-catch block
+  try
+  {
+    //Check if the path is a file
+    if(fs.statSync(p).isFile() === true)
+    {
+      //Delete the file and exit
+      return fs.unlinkSync(p);
+    }
+  }
+  catch(error)
+  {
+    //Check the error code
+    if(error.code === 'ENOENT'){ return; }
 
-  //Check for error
-  if(stat === false){ return; }
-
-  //Check if is a file
-  if(stat.isFile() === true){ return fs.unlinkSync(p); }
-
-  //Check if is not a directory
-  if(stat.isDirectory() === false){ return; }
+    //Another error, throw the error and exit
+    throw error;
+  }
 
   //Get the folder content
   var list = fs.readdirSync(p);
@@ -106,11 +113,20 @@ var rmSync = function(p, opt)
   //Check the parent folder
   if(opt.parent === false){ return; }
 
-  //Remove the parent folder
-  fs.rmdirSync(p);
+  //Remove the parent fonder in a try-catch block
+  try
+  {
+    //Remove the parent folder
+    fs.rmdirSync(p);
+  }
+  catch(error)
+  {
+    //Check the error code
+    if(error.code === 'ENOENT'){ return; }
 
-  //Exit
-  return;
+    //Throw the error
+    throw error;
+  }
 };
 
 //Remove a file or folder async
