@@ -12,8 +12,7 @@
   },
   "dependencies":
   {
-    "pstat": "1.0.2",
-    "keue": "0.0.3"
+    "keue": "^0.1.0"
   },
   "license": "MIT"
 }
