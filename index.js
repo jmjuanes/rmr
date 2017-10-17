@@ -15,20 +15,34 @@ var rmAsync = function(p, opt, cb)
   if(typeof opt.parent !== 'boolean'){ opt.parent = true; }
 
   //Get the stat of the path
-  fs.stat(p, function(error, stat)
+  return fs.stat(p, function(error, stat)
   {
     //Check the error
-    if(error){ return cb(error); }
+    if(error)
+    {
+      //Check the error code
+      if(error.code === 'ENOENT'){ return cb(null); }
+
+      //Call the callback method with the error
+      return cb(error);
+    }
 
     //Check if is a file
     if(stat.isFile() === true)
     {
       //Delete the file and call the callback method
-      return fs.unlink(p, cb);
+      return fs.unlink(p, function(error)
+      {
+        //Check the error
+        if(error && error.code !== 'ENOENT'){ return cb(error); }
+
+        //Call the callback without error
+        return cb(null);
+      });
     }
 
     //Open the directory
-    fs.readdir(p, function(error, list)
+    return fs.readdir(p, function(error, list)
     {
       //Check for error
       if(error){ return cb(error); }
@@ -48,7 +62,14 @@ var rmAsync = function(p, opt, cb)
           else
           {
             //Delete the parent folder
-            return fs.rmdir(p, cb);
+            return fs.rmdir(p, function(error)
+            {
+              //Check the error
+              if(error && error.code !== 'ENOENT'){ return cb(error); }
+
+              //Call the callback
+              return cb(null);
+            });
           }
         }
 
