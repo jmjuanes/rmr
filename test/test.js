@@ -33,7 +33,6 @@ describe('rmr', function()
 
   it('should remove a folder and all the contents', function(done)
   {
-
     var folder1_path = path.join(__dirname, './folder1/');
     var folder2_path = path.join(folder1_path, './folder2/');
     var folder3_path = path.join(folder1_path, './folder3/');
